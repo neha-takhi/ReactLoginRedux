@@ -5,6 +5,7 @@
 1. JSX
 2. SCSS
 3. Redux with login
+4. implemented styled component
 
 This sample app includes login page that includes validation and authentication of user via a local storage. After successful login ,user will redirect to home page. It also includes the basic responsive header.
 
