@@ -3,7 +3,7 @@ import { Router, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { history } from "../_helpers";
-import { alertActions } from "../_actions";
+import { alertActions, userActions } from "../_actions";
 import { Nav } from "../_components/Nav";
 import { PrivateRoute } from "../_components/PrivateRoute";
 import { HomePage } from "../HomePage";
@@ -25,7 +25,9 @@ class App extends React.Component {
     this._openMenu = this._openMenu.bind(this);
     this.responsiveMenu = React.createRef();
   }
-
+  componentDidMount() {
+    this.props.getUsers();
+  }
   componentWillMount() {
     window.addEventListener("resize", this.handleWindowSizeChange);
   }
@@ -48,23 +50,26 @@ class App extends React.Component {
     }
   }
   render() {
-    const { alert } = this.props;
+    const { alert, user } = this.props;
     const { width } = this.state;
     return (
       <div className="jumbotron">
         <div className="container">
           <div className="col-sm-8 col-sm-offset-2">
+            {/* adding conditon for Nav- view */}
             {alert.message && (
               <div className={`alert ${alert.type}`}>{alert.message}</div>
             )}
 
             <Router history={history}>
               <div>
-                <Nav
-                  width={width}
-                  responsiveMenu={this.responsiveMenu}
-                  openMenu={this._openMenu}
-                />
+                {user && (
+                  <Nav
+                    width={width}
+                    responsiveMenu={this.responsiveMenu}
+                    openMenu={this._openMenu}
+                  />
+                )}
                 <Switch>
                   <PrivateRoute exact path="/" component={HomePage} />
                   <Route path="/dashboard" component={DashBoard} />
@@ -81,12 +86,14 @@ class App extends React.Component {
 }
 
 function mapState(state) {
-  const { alert } = state;
-  return { alert };
+  const { alert, authentication } = state;
+  const { user } = authentication;
+  return { user, alert };
 }
 
 const actionCreators = {
-  clearAlerts: alertActions.clear
+  clearAlerts: alertActions.clear,
+  getUsers: userActions.getAll
 };
 
 const connectedApp = connect(
