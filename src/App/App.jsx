@@ -10,24 +10,30 @@ import { HomePage } from "../HomePage";
 import { LoginPage } from "../LoginPage";
 import { PageNotFound } from "../PageNotFound";
 import { DashBoard } from "../DashBoard";
+import withLocalStorage from "../HOC/withLocalStorage";
 import "../scss/app.scss";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: window.innerWidth
+      width: window.innerWidth,
+      users: {
+        firstName: ""
+      }
     };
-    history.listen((location, action) => {
-      // clear alert on location change
-      this.props.clearAlerts();
-    });
+
     this._openMenu = this._openMenu.bind(this);
     this.responsiveMenu = React.createRef();
   }
+
   componentDidMount() {
-    this.props.getUsers();
+    const users = this.props.load("users");
+    if (!(users && users.firstName)) {
+      this.props.getUsers();
+    }
   }
+
   componentWillMount() {
     window.addEventListener("resize", this.handleWindowSizeChange);
   }
@@ -100,4 +106,5 @@ const connectedApp = connect(
   mapState,
   actionCreators
 )(App);
-export { connectedApp as App };
+const withStorageApp = withLocalStorage(connectedApp);
+export { withStorageApp as App };
