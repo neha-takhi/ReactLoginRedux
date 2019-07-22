@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { userActions } from "../_actions";
+import { Title } from "../_components/H1";
 
 class HomePage extends React.Component {
   componentDidMount() {
@@ -11,7 +12,7 @@ class HomePage extends React.Component {
     const { user } = this.props;
     return (
       <Fragment>
-        <h1>Hi {user.firstName}!</h1>
+        <Title>Hi {user.firstName}!</Title>
       </Fragment>
     );
   }
